@@ -28,7 +28,7 @@ export default createGlobalStyle`
         ${({ theme }) => css`
           background-color: ${theme.colors.bg};
           line-height: ${theme.lineHeight};
-          font-size: ${theme.fontSizeBase} + 'px';
+          font-size: ${theme.fontSizeBase}px;
           color: ${theme.colors.textInverse.main};
           font-family: ${theme.fontFamily};
         `};

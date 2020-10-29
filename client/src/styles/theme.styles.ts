@@ -9,9 +9,9 @@ const colors = {
     dark: '#1c212e',
   },
   secondary: {
-    light: '#9ed8dd',
-    main: '#86ced5',
-    dark: '#6ba5aa',
+    light: '#33bea8',
+    main: '#00ae92',
+    dark: '#009d83',
   },
   danger: {
     light: '#ee8277',
@@ -55,7 +55,7 @@ const Theme: DefaultTheme = {
   fontFamily,
   fontSizes,
   fontWeights,
-  fontSizeBase: fontSizes[2],
+  fontSizeBase: fontSizes[1],
   borderRadius: '2px',
 };
 
