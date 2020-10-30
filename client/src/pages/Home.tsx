@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, memo } from 'react';
 import axios from 'axios';
 import { ReactComponent as UploadIcon } from '../assets/upload-icon.svg';
 import {
@@ -56,34 +56,38 @@ const Home: React.FC = () => {
     file: null,
   });
 
-  const handleDragEnter = useCallback(
-    (e: React.DragEvent<HTMLDivElement>): void => {
-      e.preventDefault();
-      e.stopPropagation();
-      setHightLight(true);
-    },
-    [setHightLight]
-  );
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    setHightLight(true);
+  };
 
-  const handleDragLeave = useCallback(
-    (e: React.DragEvent<HTMLDivElement>): void => {
-      e.preventDefault();
-      e.stopPropagation();
-      setHightLight(false);
-    },
-    [setHightLight]
-  );
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    setHightLight(false);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   const handleOndrop = async (
     event: React.DragEvent<HTMLDivElement>
   ): Promise<void> => {
     event.preventDefault();
     event.stopPropagation();
-    setState({ ...state, uploading: true });
+
     const imageFile = event.dataTransfer.files[0];
+    await uploadFile(imageFile);
+  };
+
+  const uploadFile = async (file: File): Promise<void> => {
+    setState({ ...state, uploading: true });
     const url = 'http://localhost:5000/api/upload';
     const formData = new FormData();
-    formData.append('image', imageFile);
+    formData.append('image', file);
 
     try {
       const res = await axios.post<IResponse>(url, formData, {
@@ -105,22 +109,21 @@ const Home: React.FC = () => {
     }
   };
 
-  const handleDragOver = useCallback(
-    (event: React.DragEvent<HTMLDivElement>): void => {
-      event.preventDefault();
-      event.stopPropagation();
-    },
-    []
-  );
-
-  const ResetState = useCallback((): void => {
+  const handleFileOnChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      await uploadFile(file);
+    }
+  };
+  const ResetState = (): void => {
     setState({
       file: null,
       progress: 0,
       uploading: false,
     });
-    setHightLight(false);
-  }, []);
+  };
 
   const handleCopyClick = (): void => {
     if (state.file) {
@@ -144,6 +147,7 @@ const Home: React.FC = () => {
               <ImagePreview src={state.file.url} />
               <InputContainer>
                 <Input
+                  readOnly
                   value={copied ? 'Copied to clipboard!!!' : state.file.url}
                 />
                 <CopyButton onClick={handleCopyClick}>Copy Link</CopyButton>
@@ -168,7 +172,16 @@ const Home: React.FC = () => {
               </Label>
               <SubText>
                 or&nbsp;
-                <span>browse files</span>
+                <label htmlFor='image' aria-label='file upload'>
+                  browse files
+                  <input
+                    onChange={handleFileOnChange}
+                    type='file'
+                    accept='.png, .jpg, .jpeg'
+                    name='image'
+                    id='image'
+                  />
+                </label>
                 &nbsp; on your computer
               </SubText>
             </UploadBox>

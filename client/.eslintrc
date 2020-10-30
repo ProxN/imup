@@ -50,6 +50,11 @@
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/comma-dangle":"off",
     "@typescript-eslint/no-empty-interface":"off",
-    "@typescript-eslint/no-explicit-any":"off"
+    "@typescript-eslint/no-explicit-any":"off",
+    "jsx-a11y/label-has-for": [ 2, {
+      "required": {
+          "some": [ "nesting", "id" ]
+      }
+    }]
   }
 }

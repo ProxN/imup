@@ -51,26 +51,28 @@ export const SvgContainer = styled.div`
   }
 `;
 
-export const Label = styled.label`
+export const Label = styled.div`
   ${({ theme }) => css`
     font-size: ${theme.fontSizes[4]}px;
     font-weight: ${theme.fontWeights[1]};
   `};
   opacity: 0.8;
   text-align: center;
-  span {
+  label {
     color: ${({ theme }) => theme.colors.secondary.main};
     opacity: 1;
   }
-  pointer-events: none;
 `;
 
 export const SubText = styled(Label)`
   ${({ theme }) => css`
     font-size: ${theme.fontSizes[1]}px;
-    span {
+    label {
       border-bottom: 1px solid ${theme.colors.secondary.main};
       cursor: pointer;
+    }
+    label input {
+      display: none;
     }
   `};
 `;
@@ -128,11 +130,6 @@ export const InputContainer = styled.div`
 `;
 
 export const Input = styled.input`
-  /* ${({ theme }) => css`
-    background: ${theme.colors.primary.main};
-    border: 1px solid ${theme.colors.primary.light};
-    color: ${theme.colors.textInverse.secondary};
-  `}; */
   width: 100%;
   border: none;
   background: transparent;
