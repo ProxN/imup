@@ -155,6 +155,9 @@ export const CopyButton = styled.button`
   width: 12rem;
   outline: none;
   cursor: pointer;
+  ::hover {
+    background: ${({ theme }) => theme.colors.secondary.light};
+  }
 `;
 
 export const GoBack = styled(CopyButton)`

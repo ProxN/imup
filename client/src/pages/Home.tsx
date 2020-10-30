@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import axios from 'axios';
 import { ReactComponent as UploadIcon } from '../assets/upload-icon.svg';
 import {
@@ -56,27 +56,30 @@ const Home: React.FC = () => {
     file: null,
   });
 
-  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    setHightLight(true);
-  };
+  const handleDragEnter = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      setHightLight(true);
+    },
+    [setHightLight]
+  );
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
-    e.preventDefault();
-    e.stopPropagation();
-    setHightLight(false);
-  };
+  const handleDragLeave = useCallback(
+    (e: React.DragEvent<HTMLDivElement>): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      setHightLight(false);
+    },
+    [setHightLight]
+  );
 
   const handleOndrop = async (
     event: React.DragEvent<HTMLDivElement>
   ): Promise<void> => {
     event.preventDefault();
     event.stopPropagation();
-    setState((presvState) => ({
-      ...presvState,
-      uploading: true,
-    }));
+    setState({ ...state, uploading: true });
     const imageFile = event.dataTransfer.files[0];
     const url = 'http://localhost:5000/api/upload';
     const formData = new FormData();
@@ -85,19 +88,16 @@ const Home: React.FC = () => {
     try {
       const res = await axios.post<IResponse>(url, formData, {
         onUploadProgress: (p: IProgress) => {
-          setState((presvState) => ({
-            ...presvState,
+          setState({
+            ...state,
             progress: (p.loaded * 100) / p.total,
-          }));
+            uploading: true,
+          });
         },
       });
 
       if (res.data) {
-        setState((presvState) => ({
-          ...presvState,
-          uploading: false,
-          file: res.data.data,
-        }));
+        setState({ ...state, uploading: false, file: res.data.data });
       }
     } catch (err: any) {
       setState({ file: null, uploading: false, progress: 0 });
@@ -105,19 +105,22 @@ const Home: React.FC = () => {
     }
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
+  const handleDragOver = useCallback(
+    (event: React.DragEvent<HTMLDivElement>): void => {
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    []
+  );
 
-  const ResetState = (): void => {
+  const ResetState = useCallback((): void => {
     setState({
       file: null,
       progress: 0,
       uploading: false,
     });
     setHightLight(false);
-  };
+  }, []);
 
   const handleCopyClick = (): void => {
     if (state.file) {
@@ -125,6 +128,7 @@ const Home: React.FC = () => {
       setCopied(true);
     }
   };
+
   return (
     <HomeContainer>
       {state.uploading ? (
@@ -175,4 +179,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default memo(Home);
